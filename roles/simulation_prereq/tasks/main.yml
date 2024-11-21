@@ -1,0 +1,86 @@
+---
+
+- name: Checks if the directory exists
+  ansible.builtin.stat:
+    path: /home/kazem/simulation/event_driven_simulation/event_driven_observatory
+  register: event_driven_observatory
+
+- name: Copy the event-driven data to the master
+  ansible.builtin.copy:
+    src: /home/akazem/Documents/PhD/second_publication/cluster_configuration/jobs/event_driven_observatory
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  when: event_driven_observatory.stat.exists == False
+
+- name: Create the directory
+  ansible.builtin.file:
+    path: /home/kazem/simulation
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+
+- name: Copy the python scripts to the master
+  ansible.builtin.copy:
+    src: sysbench_from_csv.py
+    dest: /home/kazem/simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy the Dockerfile
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: /home/kazem/simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy the pod file
+  ansible.builtin.copy:
+    src: pod.yml
+    dest: /home/kazem/simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy psutils monitoring script to the nodes
+  ansible.builtin.copy:
+    src: log_cpu_usage.py
+    dest: /home/kazem/simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Build the docker image
+  community.docker.docker_image:
+    build:
+      path: /home/kazem/simulation/
+    name: load-injector
+    source: build
+    tag: local
+
+- name: Check if the docker image tar file exists
+  ansible.builtin.stat:
+    path: /home/kazem/simulation/load-injector.tar
+  register: docker_image_tar
+
+- name: Save the docker image to a tar file
+  ansible.builtin.shell: |
+    docker save load-injector:local > /home/kazem/simulation/load-injector.tar
+  when: not docker_image_tar.stat.exists
+
+- name: Check if the docker image is already imported
+  ansible.builtin.command:
+    cmd: "k3s ctr images list | grep load-injector:local"
+  register: image_imported
+  failed_when: false
+  changed_when: false
+
+- name: Import the docker image to the nodes
+  ansible.builtin.command: sudo k3s ctr images import /home/kazem/simulation/load-injector.tar
+  when: image_imported.rc != 0
+
+- name: Remove the tar file
+  ansible.builtin.shell: "rm /home/kazem/simulation/load-injector.tar"

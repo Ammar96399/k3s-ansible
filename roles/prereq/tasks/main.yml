@@ -1,4 +1,52 @@
 ---
+- name: Install docker
+  block:
+    - name: Install aptitude
+      ansible.builtin.apt:
+        update_cache: true
+        name: aptitude
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - ca-certificates
+          - curl
+          - gnupg2
+          - apt-transport-https
+          - software-properties-common
+
+    - name: Add Docker GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=arm64] https://download.docker.com/linux/debian bookworm stable
+        state: present
+
+    - name: Install Docker Packages
+      ansible.builtin.apt:
+        state: present
+        update_cache: true
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+
+    - name: Add current user to Docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+
+    - name: Start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+
 - name: Enforce minimum Ansible version
   ansible.builtin.assert:
     that:
@@ -252,3 +300,8 @@
         content: "{{ registries_config_yaml }}"
         dest: "/etc/rancher/k3s/registries.yaml"
         mode: "0644"
+
+- name: Install psutils on the nodes
+  ansible.builtin.package:
+    name: python3-psutil
+    state: present

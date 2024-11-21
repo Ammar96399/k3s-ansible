@@ -1,0 +1,38 @@
+---
+- name: Run prods for multiple workload numbers
+  ansible.builtin.shell: |
+    kubectl apply -f - <<EOF
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: load-injector-${WORKLOAD_NUMBER}  # Name the pod dynamically based on WORKLOAD_NUMBER
+    spec:
+      containers:
+        - name: load-injector
+          image: load-injector:local
+          args:
+            - "${WORKLOAD_NUMBER}"
+            - "${MODEL}"
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: "0"
+      restartPolicy: Never
+    EOF
+  loop: "{{ range(1, 81) | list }}"
+  loop_control:
+    loop_var: workload_number
+  environment:
+    WORKLOAD_NUMBER: "{{ workload_number }}"
+    MODEL: "rpi4b"
+
+- name: Wait for 40 minutes
+  ansible.builtin.pause:
+    minutes: 40
+
+- name: Stop the Python process
+  ansible.builtin.shell: |
+    if [ -f /tmp/python_pid ]; then
+      kill -9 $(cat /tmp/python_pid) && rm -f /tmp/python_pid
+    fi

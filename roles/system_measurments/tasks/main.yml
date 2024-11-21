@@ -1,0 +1,15 @@
+- name: Check if the old measurements file exists
+  ansible.builtin.stat:
+    path: /home/kazem/simulation/results.csv
+  register: results_file
+
+- name: Remove old measurements
+  ansible.builtin.shell: "rm /home/kazem/simulation/results.csv"
+  when: results_file.stat.exists
+
+- name: Start measurements
+  ansible.builtin.shell: |
+    python3 /home/kazem/simulation/log_cpu_usage.py > /home/kazem/simulation/results.csv 2>&1 &
+    echo $! > /tmp/python_pid
+  async: 0
+  poll: 0

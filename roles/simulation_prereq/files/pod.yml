@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Pod
+
+metadata:
+  name: load-injector
+spec:
+  ttlSecondsAfterFinished: 10
+  containers:
+  - name: load-injector
+    image: docker.io/library/load-injector:local
+    args: ["${WORKLOAD_NUMBER}", "${MODEL}"]
+    imagePullPolicy: Never
+    resources:
+      requests:
+        cpu: 0
+      limits:
+        cpu: 1

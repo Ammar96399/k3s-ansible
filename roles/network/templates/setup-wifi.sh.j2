@@ -1,0 +1,14 @@
+#!/bin/bash
+
+nmcli c add \
+    con-name {{ network_ssid }} \
+    type wifi \
+    ifname wlan0 \
+    ssid {{ network_ssid }} \
+    802-11-wireless-security.key-mgmt wpa-eap \
+    802-1x.identity {{ network_identity }} \
+    802-1x.anonymous-identity {{ network_anonymous_identity }} \
+    802-1x.ca-cert /home/{{ ansible_user }}/wifi_config/Chain-TCS-4-OV.pem \
+    802-1x.domain-suffix-match radius-interne.inria.fr \
+    802-1x.eap peap \
+    802-1x.phase2-auth mschapv2

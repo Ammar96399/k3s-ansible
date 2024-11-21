@@ -58,7 +58,7 @@
   when: inventory_hostname == groups[server_group][0]
   block:
     - name: Copy K3s service file [Single]
-      when: groups[server_group] | length == 1 or use_external_database
+      when: groups[server_group] | length == 1 or use_external_dat6abase
       ansible.builtin.template:
         src: "k3s-single.service.j2"
         dest: "{{ systemd_dir }}/k3s.service"
@@ -303,3 +303,77 @@
         path: ~{{ ansible_user }}/.bashrc
         regexp: '\.\s+<\(kubectl completion bash\)'
         line: ". <(kubectl completion bash)  # Added by k3s-ansible"
+
+
+- name: Setup helm for user_kubectl
+  when: user_kubectl
+  block:
+    - name: Remove helm if it exists
+      ansible.builtin.command:
+        cmd: rm -f /usr/local/bin/helm
+      register: remove_helm_result
+      changed_when: remove_helm_result.rc == 0
+      failed_when: remove_helm_result.rc not in [0, 1]
+
+    - name: Download helm install script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        dest: /usr/local/bin/helm-install.sh
+        mode: "0755"
+
+    - name: Check if helm is installed
+      ansible.builtin.command: helm version
+      register: helm_installed
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install helm
+      ansible.builtin.command:
+        cmd: /usr/local/bin/helm-install.sh
+      when: helm_installed.rc != 0 and helm_installed.stdout.find('Version') == -1
+
+- name: Setup prometheus and grafana
+  block:
+    - name: Check if prometheus helm chart directory exists
+      ansible.builtin.stat:
+        path: /tmp/k3s-monitoring/.git
+      register: prometheus_git_dir
+      changed_when: false
+
+    - name: Clone the prometheus helm chart
+      ansible.builtin.git:
+        repo: https://github.com/cablespaghetti/k3s-monitoring.git
+        dest: /tmp/k3s-monitoring
+        update: true
+      register: git_clone_result
+      changed_when: git_clone_result.after != git_clone_result.before
+      when: not prometheus_git_dir.stat.exists
+
+    - name: Check if prometheus-community repo is already added
+      ansible.builtin.command:
+        cmd: helm repo list
+      register: helm_repo_list
+      changed_when: false
+      ignore_errors: true
+
+    - name: Add helm repo for prometheus
+      ansible.builtin.command:
+        cmd: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      when: "'prometheus-community' not in helm_repo_list.stdout"
+      register: add_helm_repo_result
+      failed_when: add_helm_repo_result.rc != 0 and "'exists' not in add_helm_repo_result.stderr"
+      changed_when: add_helm_repo_result.rc == 0 and "'exists' not in add_helm_repo_result.stderr"
+
+    - name: Install prometheus helm chart
+      ansible.builtin.command:
+        cmd: >
+          helm upgrade --install prometheus prometheus-community/kube-prometheus-stack
+          --values /tmp/k3s-monitoring/kube-prometheus-stack-values.yaml
+          --kubeconfig /etc/rancher/k3s/k3s.yaml
+
+    - name: Edit grafana service to use NodePort
+      ansible.builtin.command:
+        cmd: kubectl patch svc prometheus-grafana --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]'
+      register: patch_result
+      failed_when: patch_result.rc != 0
+      changed_when: "'configured' in patch_result.stdout"

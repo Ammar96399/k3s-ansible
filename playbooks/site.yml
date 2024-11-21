@@ -1,4 +1,17 @@
 ---
+- name: Setup Wi-Fi connection
+  hosts: all
+  become: true
+  vars_prompt:
+    - name: network_identity
+      prompt: Enter value for network_identity
+      private: false
+    - name: network_password
+      prompt: Enter value for network_password
+  roles:
+    - role: network
+      tags: [network]
+
 - name: Cluster prep
   hosts: k3s_cluster
   gather_facts: true
@@ -15,7 +28,9 @@
     - role: k3s_server
 
 - name: Setup K3S agent
-  hosts: agent
+  hosts: 
+    - rpi4b_agent
+    - rpi5_agent
   become: true
   roles:
     - role: k3s_agent
