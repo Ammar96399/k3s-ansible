@@ -20,17 +20,30 @@
     - role: prereq
     - role: airgap
     - role: raspberrypi
+  vars_files:
+    - secret.yml
 
 - name: Setup K3S server
   hosts: server
   become: true
   roles:
     - role: k3s_server
+  vars:
+    label: model=rpi4b
 
-- name: Setup K3S agent
+- name: Setup K3S rpi4b agent
   hosts: 
     - rpi4b_agent
-    - rpi5_agent
   become: true
   roles:
     - role: k3s_agent
+  vars: 
+    label: model=rpi4b
+
+- name: Setup K3S rpi5 agent
+  hosts: rpi5_agent
+  become: true
+  roles:
+    - role: k3s_agent
+  vars:
+    label: model=rpi5  

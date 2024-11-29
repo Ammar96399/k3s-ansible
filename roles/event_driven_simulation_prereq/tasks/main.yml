@@ -1,0 +1,136 @@
+---
+
+- name: Create the simulation directory
+  ansible.builtin.file:
+    path: /home/kazem/simulation
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+
+- name: Copy the power usage script
+  ansible.builtin.copy:
+    src: power_usage.py
+    dest: /home/kazem/simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Copy psutils monitoring script to the nodes
+  ansible.builtin.copy:
+    src: log_cpu_usage.py
+    dest: /home/kazem/simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Create the event-driven simulation directory
+  ansible.builtin.file:
+    path: /home/kazem/simulation/event_driven_simulation
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+
+- name: Checks if the event driven workload directory exists 
+  ansible.builtin.stat:
+    path: /home/kazem/simulation/event_driven_simulation/event_driven_observatory
+  register: event_driven_observatory
+
+- name: Copy the event-driven data to the master
+  ansible.builtin.copy:
+    src: event_driven_observatory
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  when: not event_driven_observatory.stat.exists
+
+- name: Copy the sysbench script
+  ansible.builtin.copy:
+    src: sysbench_from_csv.py
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Copy the Dockerfile
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Copy the pod file
+  ansible.builtin.copy:
+    src: pod.yml
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Copy the python script to get preferred node
+  ansible.builtin.copy:
+    src: get_preferred_node.py
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Copy the csv file with the preferred nodes
+  ansible.builtin.copy:
+    src: preferred_nodes.csv
+    dest: /home/kazem/simulation/event_driven_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Remove docker image
+  ansible.builtin.command: sudo docker image rm load-injector:local
+  ignore_errors: true
+
+- name: Remove docker image
+  ansible.builtin.command: sudo docker image rm event-driven-load-injector:local
+  ignore_errors: true
+
+- name: Build the docker image
+  community.docker.docker_image:
+    build:
+      path: /home/kazem/simulation/event_driven_simulation
+      nocache: true
+    name: event-driven-load-injector
+    source: build
+    tag: local
+
+- name: Check if the docker image tar file exists
+  ansible.builtin.stat:
+    path: /home/kazem/simulation/event-driven-load-injector.tar
+  register: docker_image_tar
+
+- name: Delete the docker image tar file
+  ansible.builtin.file:
+    path: /home/kazem/simulation/event-driven-load-injector.tar
+    state: absent
+  when: docker_image_tar.stat.exists
+
+- name: Save the docker image to a tar file
+  ansible.builtin.shell: |
+    docker save event-driven-load-injector:local > /home/kazem/simulation/event-driven-load-injector.tar
+
+- name: Remove the docker image from the nodes
+  ansible.builtin.command: sudo k3s ctr images rm docker.io/library/event-driven-load-injector:local
+  ignore_errors: true
+
+- name: Import the docker image to the nodes
+  ansible.builtin.command: sudo k3s ctr images import /home/kazem/simulation/event-driven-load-injector.tar
+
+- name: Install python3-serial on the nodes
+  ansible.builtin.package:
+    name: python3-serial
+    state: present

@@ -1,0 +1,31 @@
+---
+- name: Run prods for multiple workload numbers
+  ansible.builtin.shell: |
+    python3 /home/kazem/simulation/long_term_simulation/get_preferred_node.py ${WORKLOAD_NUMBER}> /tmp/preferred_node;
+    export MODEL=$(cat /tmp/preferred_node);
+    kubectl apply -f - <<EOF
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: long-term-load-injector-${WORKLOAD_NUMBER}  # Name the pod dynamically based on WORKLOAD_NUMBER
+    spec:
+      containers:
+        - name: long-term-load-injector
+          image: long-term-load-injector:local
+          args:
+            - "${WORKLOAD_NUMBER}"
+            - "${MODEL}"
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: "0"
+      nodeSelector:
+        model: "${MODEL}"
+      restartPolicy: Never
+    EOF
+  loop: "{{ range(1, 81) | list }}"
+  loop_control:
+    loop_var: workload_number
+  environment:
+    WORKLOAD_NUMBER: "{{ workload_number }}"

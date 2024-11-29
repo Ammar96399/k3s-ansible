@@ -1,0 +1,52 @@
+---
+- name: Prepare event driven simulation
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Delete log file
+      ansible.builtin.file:
+        path: /tmp/scp_output.log
+        state: absent
+      become: true
+
+    - name: Delete old simulation files
+      ansible.builtin.file:
+        path: /home/kazem/simulation/results
+        state: absent
+
+    - name: Create the directory
+      ansible.builtin.file:
+        path: /home/kazem/simulation/results
+        state: directory
+
+    - name: Start python script
+      ansible.builtin.shell: |
+        python3 /home/kazem/simulation/log_cpu_usage.py -l 0.1 /home/kazem/simulation/results/$(hostname)_cpu_usage.csv 2>&1 &
+        echo $! > /tmp/cpu_python_pid
+      async: 0
+      poll: 0
+
+    - name: Start python script
+      ansible.builtin.shell: |
+        python3 /home/kazem/simulation/power_usage.py -o /home/kazem/simulation/results/$(hostname)_power_usage.csv save 2>&1 &
+        echo $! > /tmp/power_python_pid
+      async: 0
+      poll: 0
+      become: true
+
+    - name: Run command with delay in background
+      ansible.builtin.shell: "nohup bash -c 'sleep 10s && sudo kill -9 $(cat /tmp/cpu_python_pid)' > /dev/null 2>&1 &"
+
+    - name: Run command with delay in background
+      ansible.builtin.shell: "nohup bash -c 'sleep 10s && sudo kill -9 $(cat /tmp/power_python_pid)' > /dev/null 2>&1 &"
+
+    - name: Send data to the server
+      ansible.builtin.shell: nohup bash -c 'sleep 11s && scp -i /home/kazem/.ssh/id_rsa /home/kazem/simulation/results/$(hostname)_cpu_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/hardware_simulation/simulation_event_driven_observatory' > /tmp/scp_output.log 2>&1 &
+      become: true
+      become_user: kazem
+
+    - name: Send data to the server
+      ansible.builtin.shell: nohup bash -c 'sleep 11s && scp -i /home/kazem/.ssh/id_rsa /home/kazem/simulation/results/$(hostname)_power_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/hardware_simulation/simulation_event_driven_observatory' > /tmp/scp_output.log 2>&1 &
+      become: true
+      become_user: kazem

@@ -4,7 +4,7 @@
   gather_facts: true
   become: true
   roles:
-    - role: simulation_prereq
+    - role: event_driven_simulation_prereq
     - role: system_measurments
 
 - name: Run event driven simulation
@@ -12,4 +12,4 @@
   gather_facts: true
   become: true
   roles:
-    - role: simulation 
+    - role: event_driven_simulation 

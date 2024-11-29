@@ -1,0 +1,561 @@
+configuration:
+  - input_file: workload_1/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_2/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: 0
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_3/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_4/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_5/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_6/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_7/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_8/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -4
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_9/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_10/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: -1
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_11/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_12/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_13/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_14/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_15/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_16/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_17/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_18/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: -2
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_19/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_20/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_21/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_22/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_23/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_24/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v    
+  - input_file: workload_25/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_26/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: -3
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_27/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_28/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_29/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_30/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_31/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_32/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_33/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_34/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: -4
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_35/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_36/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_37/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_38/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_39/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_40/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_41/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 5
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_42/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: 1
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_43/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_44/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_45/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_46/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_47/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_48/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -3
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_49/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 6
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_50/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: 2
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_51/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_52/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_53/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_54/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_55/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_56/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -2
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_57/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 7
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_58/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: 6
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_59/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: -1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_60/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: -1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_61/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: -1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_62/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: -1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_63/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: -1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_64/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: -1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v          
+  - input_file: workload_65/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 8
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_66/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: 7
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_67/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_68/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_69/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_70/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_71/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_72/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: 0
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v  
+  - input_file: workload_73/7dc3cc734b35a85b3f73601d5681f76b.csv
+    max_value: 1.0
+    time_shift_hours: 9
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_74/7dc3cc734b35a85b3f73601d5681f76b.csv   
+    max_value: 1.0
+    time_shift_hours: 8
+    day_to_extract: 3
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_75/8166ac0a16708ef013e353c42c710b99.csv
+    max_value: 1.0
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_76/2f189b40edc7a102bc477594f4bfb197.csv
+    max_value: 0.2
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: events_per_second
+    verbose_flag: -v
+  - input_file: workload_77/0fbe0db40b8121ba0bb64d0e736cfbf2.csv
+    max_value: 0.2
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: compressing_mips
+    verbose_flag: -v
+  - input_file: workload_78/86c90dbb990e22a932fec67d4a03088f.csv
+    max_value: 0.2
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_79/dcdfea5c41e285b4561b6e8757c7b5ac.csv
+    max_value: 0.2
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v
+  - input_file: workload_80/60121aee39cf70e5969205d079d97042.csv
+    max_value: 0.2
+    time_shift_hours: 1
+    day_to_extract: 2
+    rpi_model: rpi3b
+    metric: decompressing_mips
+    verbose_flag: -v   

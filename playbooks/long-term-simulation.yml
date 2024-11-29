@@ -1,0 +1,15 @@
+---
+- name: Prepare long term simulation
+  hosts: all 
+  gather_facts: true
+  become: true
+  roles:
+    - role: long_term_simulation_prereq
+    - role: system_measurments
+
+- name: Run long term simulation
+  hosts: server
+  gather_facts: true
+  become: true
+  roles:
+    - role: long_term_simulation 

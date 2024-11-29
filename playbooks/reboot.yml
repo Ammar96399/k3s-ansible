@@ -10,7 +10,7 @@
         test_command: kubectl get nodes
 
 - name: Reboot cluster agents staggered
-  hosts: agent
+  hosts: rpi4b_agent, rpi5_agent
   become: true
   gather_facts: true
   serial: 1
