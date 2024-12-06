@@ -91,6 +91,24 @@
     group: "{{ ansible_user }}"
     force: true
 
+- name: Copy the python script to get required resources
+  ansible.builtin.copy:
+    src: required_resources.py
+    dest: /home/kazem/simulation/long_term_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
+- name: Copy the csv file with the required resources
+  ansible.builtin.copy:
+    src: long_term_observatory.csv
+    dest: /home/kazem/simulation/long_term_simulation
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+
 - name: Remove docker image
   ansible.builtin.command: sudo docker image rm load-injector:local
   ignore_errors: true

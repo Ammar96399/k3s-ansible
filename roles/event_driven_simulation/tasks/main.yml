@@ -2,7 +2,9 @@
 - name: Run prods for multiple workload numbers
   ansible.builtin.shell: |
     python3 /home/kazem/simulation/event_driven_simulation/get_preferred_node.py ${WORKLOAD_NUMBER}> /tmp/preferred_node;
+    python3 /home/kazem/simulation/event_driven_simulation/required_resources.py ${WORKLOAD_NUMBER} $(cat /tmp/preferred_node) > /tmp/required_resources;
     export MODEL=$(cat /tmp/preferred_node);
+    export CPU=$(cat /tmp/required_resources);
     kubectl apply -f - <<EOF
     apiVersion: v1
     kind: Pod
@@ -19,7 +21,7 @@
             limits:
               cpu: "1"
             requests:
-              cpu: "0"
+              cpu: "${CPU}"
       nodeSelector:
         model: "${MODEL}"
       restartPolicy: Never

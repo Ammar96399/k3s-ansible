@@ -1,0 +1,108 @@
+- name: Install stress-ng
+  ansible.builtin.apt:
+    name: stress-ng
+    state: present
+    update_cache: true
+
+- name: Create the benchmark directory
+  ansible.builtin.file:
+    path: /home/kazem/benchmark
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+
+- name: Create the benchmark directory
+  ansible.builtin.file:
+    path: /home/kazem/benchmark/results
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+
+- name: Copy the stress ng python 
+  ansible.builtin.copy:
+    src: test.py
+    dest: /home/kazem/benchmark
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy log_cpu_usage 
+  ansible.builtin.copy:
+    src: log_cpu_usage.py
+    dest: /home/kazem/benchmark
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy power_usage
+  ansible.builtin.copy:
+    src: power_usage.py
+    dest: /home/kazem/benchmark
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy power classification script
+  ansible.builtin.copy:
+    src: power_classification.py
+    dest: /home/kazem/benchmark
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Copy load classification script
+  ansible.builtin.copy:
+    src: load_classification.py
+    dest: /home/kazem/benchmark
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Remove old results
+  ansible.builtin.shell: rm -rf /home/kazem/benchmark/results/*
+
+- name: Start log_cpu script
+  ansible.builtin.shell: |
+    python3 /home/kazem/benchmark/log_cpu_usage.py -l 0.1 /home/kazem/benchmark/results/$(hostname)_cpu_usage.csv 2>&1 &
+    echo $! > /tmp/cpu_python_pid
+  become: true
+
+- name: Start power_usage script
+  ansible.builtin.shell: |
+    sudo python3 /home/kazem/benchmark/power_usage.py -o /home/kazem/benchmark/results/$(hostname)_power_usage.csv read 2>&1 &
+    echo $! > /tmp/power_python_pid
+  become: true
+
+- name: Run stress ng script
+  ansible.builtin.shell: |
+    sudo python3 /home/kazem/benchmark/test.py 
+  become: true
+
+- name: Run command to kill log_cpu script
+  ansible.builtin.shell: sudo kill -9 $(cat /tmp/cpu_python_pid)
+  ignore_errors: true
+
+- name: Run command to kill power_usage script
+  ansible.builtin.shell: sudo kill -9 $(cat /tmp/power_python_pid)
+  ignore_errors: true
+
+- name: Delete log file
+  ansible.builtin.file:
+    path: /tmp/scp_output.log
+    state: absent
+
+- name: Send results to the server
+  ansible.builtin.shell: scp -i /home/kazem/.ssh/id_rsa /home/kazem/benchmark/results/start_end_time.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/benchmark/$(hostname)_start_end_time.csv
+  become: true
+  become_user: kazem
+
+- name: Send results to the server
+  ansible.builtin.shell: scp -i /home/kazem/.ssh/id_rsa /home/kazem/benchmark/results/$(hostname)_cpu_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/benchmark
+  become: true
+  become_user: kazem
+
+- name: Send results to the server
+  ansible.builtin.shell: scp -i /home/kazem/.ssh/id_rsa /home/kazem/benchmark/results/$(hostname)_power_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/benchmark
+  become: true
+  become_user: kazem
+

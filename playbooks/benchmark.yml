@@ -1,0 +1,7 @@
+---
+- name: Prepare event driven simulation
+  hosts: all 
+  gather_facts: true
+  become: true
+  roles:
+    - role: benchmark

@@ -2,7 +2,7 @@ from serial import Serial
 from struct import unpack as unpack
 from struct import pack_into as pack_into
 from argparse import ArgumentParser, FileType
-from time import time, sleep, gmtime, localtime, mktime
+from time import time, sleep
 from sys import exit
 
 # actions along with their description, no list function
@@ -67,7 +67,7 @@ class AVHzY_CT3:
             if len(packet) == 30:
                 break
 
-        packetData = unpack("<fffff", packet[9:29])  # Adjust byte order if necessary
+        packetData = unpack("<fffff", packet[9:29])  
         
         voltage = packetData[0]
         current = packetData[1]
@@ -76,7 +76,7 @@ class AVHzY_CT3:
         voltageDM = packetData[4]      
         self.__timestamp = time()
         
-        self.__output.write("{0:.3f},".format(self.__timestamp))
+        self.__output.write("{0:.3f}".format(self.__timestamp))
         if "voltage" in self.__reads:
             self.__output.write(",{0:.6f}".format(voltage))
         if "current" in self.__reads:
@@ -135,12 +135,13 @@ class AVHzY_CT3:
         self.__output.close()
         self.__output = output
 
+
 def main():
     parser = ArgumentParser(description="Program to interact with the AVHzY CT-2 power meter")
     parser.add_argument("action", metavar="action", choices=__actions, help="The action to perform [choices: %(choices)s]")
     parser.add_argument("-d", "--device", default="/dev/ttyACM0", help="Path to the device [default: %(default)s]")
     parser.add_argument("-r", "--repeat", type=int, default=-1, help="How many times to repeat the operation. Must be in [-1, inf[ (-1: infinite) [default: %(default)s]")
-    parser.add_argument("-t", "--time", type=int, default=50, help="The time (in milliseconds) to wait between each action iteration.")
+    parser.add_argument("-t", "--time", type=int, default=100, help="The time (in milliseconds) to wait between each action iteration.")
     parser.add_argument("-o", "--output", default="-", type=FileType("w"), help="Where to write output of the action [default: stdout]")
     parser.add_argument("-g", "--get", default="all", choices=__gets, nargs="+", help="For read operation: what to get from power meter [choices: %(choices)s default: %(default)s")
     args = parser.parse_args()

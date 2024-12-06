@@ -16,6 +16,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     workload_id = int(sys.argv[1])
-    file_path = '/home/kazem/simulation/long_term_simulation/preferred_nodes.csv'
+    file_path = '/home/kazem/simulation/event_driven_simulation/preferred_nodes.csv'
     preferred_nodes = get_preferred_nodes(file_path)
     print(preferred_nodes[workload_id - 1])

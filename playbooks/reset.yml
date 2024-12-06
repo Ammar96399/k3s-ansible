@@ -9,7 +9,7 @@
         cmd: k3s-uninstall.sh
         removes: /var/lib/rancher/k3s/*
     - name: Run K3s Uninstall script [agent]
-      when: "'agent' in group_names"
+      when: "'rpi4b_agent' or 'rpi5_agent' in group_names"
       ansible.builtin.command:
         cmd: k3s-agent-uninstall.sh
         removes: /var/lib/rancher/k3s/*
