@@ -2,7 +2,7 @@ from serial import Serial
 from struct import unpack as unpack
 from struct import pack_into as pack_into
 from argparse import ArgumentParser, FileType
-from time import time, sleep, gmtime, localtime, mktime
+from time import time, sleep
 from sys import exit
 
 # actions along with their description, no list function

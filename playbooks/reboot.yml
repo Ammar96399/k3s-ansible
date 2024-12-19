@@ -1,19 +1,19 @@
 ---
 - name: Reboot cluster servers staggered
-  hosts: server
+  hosts: master
   become: true
   gather_facts: true
   serial: 1
   tasks:
-    - name: Reboot
-      ansible.builtin.reboot:
-        test_command: kubectl get nodes
+      - name: Reboot
+        ansible.builtin.reboot:
+            test_command: kubectl get nodes
 
 - name: Reboot cluster agents staggered
-  hosts: rpi4b_agent, rpi5_agent
+  hosts: rpi4b-worker, rpi5-worker
   become: true
   gather_facts: true
   serial: 1
   tasks:
-    - name: Reboot
-      ansible.builtin.reboot:
+      - name: Reboot
+        ansible.builtin.reboot:

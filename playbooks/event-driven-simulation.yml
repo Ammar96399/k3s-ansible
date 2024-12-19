@@ -8,7 +8,7 @@
     - role: system_measurments
 
 - name: Run event driven simulation
-  hosts: server
+  hosts: master
   gather_facts: true
   become: true
   roles:

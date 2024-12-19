@@ -1,75 +1,89 @@
 ---
+- name: Check if the network is already configured
+  command: ping -c 1 -W 1 google.com
+  register: ping_wifi
+  ignore_errors: true
+
+- name: Check if the network is already configured
+  command: ping -c 1 -W 1 10.0.0.2
+  register: ping_eth
+  ignore_errors: true
+
 - name: Configure connection
   block:
-    - name: Set country code for Wifi connection
-      command: sudo raspi-config nonint do_wifi_country FR
+      - name: Set country code for Wifi connection
+        command: sudo raspi-config nonint do_wifi_country FR
 
-    - name: Remove network configuration if existing
-      community.general.nmcli:
-        conn_name: "{{ item }}"
-        state: absent
-      loop:
-        - INRIA-interne
+      - name: Remove network configuration if existing
+        community.general.nmcli:
+            conn_name: "{{ item }}"
+            state: absent
+        loop:
+            - INRIA-interne
 
-    - name: Create a directory if it does not exist
-      ansible.builtin.file:
-        path: /home/{{ ansible_user }}/wifi_config
-        state: directory
-        mode: '0755'
+      - name: Create a directory if it does not exist
+        ansible.builtin.file:
+            path: /home/{{ ansible_user }}/wifi_config
+            state: directory
+            mode: "0755"
 
-    - name: Copy resources to create network configuration
-      copy:
-        src: wifi_config
-        dest: /home/{{ ansible_user }}
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
+      - name: Copy resources to create network configuration
+        copy:
+            src: wifi_config
+            dest: /home/{{ ansible_user }}
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
 
-    - name: Generate scripts to set network configurations
-      vars:
-        network_ssid: "{{ item.network_ssid }}"
-        network_anonymous_identity: "{{ item.network_anonymous_identity }}"
-      template:
-        src: "setup-wifi.sh.j2"
-        dest: /home/{{ ansible_user }}/wifi_config/setup-{{ item.network_ssid | lower }}.sh
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: u=rw,g=r,o=r
-      loop:
-        - { network_ssid: INRIA-interne, network_anonymous_identity: anonymous }
+      - name: Generate scripts to set network configurations
+        vars:
+            network_ssid: "{{ item.network_ssid }}"
+            network_anonymous_identity: "{{ item.network_anonymous_identity }}"
+        template:
+            src: "setup-wifi.sh.j2"
+            dest: /home/{{ ansible_user }}/wifi_config/setup-{{ item.network_ssid | lower }}.sh
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: u=rw,g=r,o=r
+        loop:
+            - {
+                  network_ssid: INRIA-interne,
+                  network_anonymous_identity: anonymous,
+              }
 
-    - name: Ensure script is executable
-      file:
-        path: /home/{{ ansible_user }}/wifi_config/setup-{{ item }}.sh
-        mode: u=rwx,g=r,o=r
-      loop:
-        - inria-interne
+      - name: Ensure script is executable
+        file:
+            path: /home/{{ ansible_user }}/wifi_config/setup-{{ item }}.sh
+            mode: u=rwx,g=r,o=r
+        loop:
+            - inria-interne
 
-    - name: Generate file with credentials
-      template:
-        src: "credentials.conf.j2"
-        dest: /home/{{ ansible_user }}/wifi_config/credentials.conf
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: u=rw,g=r,o=r
+      - name: Generate file with credentials
+        template:
+            src: "credentials.conf.j2"
+            dest: /home/{{ ansible_user }}/wifi_config/credentials.conf
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: u=rw,g=r,o=r
 
-    - name: Run script to create network configuration
-      command:
-        cmd: /home/{{ ansible_user }}/wifi_config/setup-inria-interne.sh
+      - name: Run script to create network configuration
+        command:
+            cmd: /home/{{ ansible_user }}/wifi_config/setup-inria-interne.sh
 
-    - name: Enable Wi-Fi connection
-      command:
-        cmd: /usr/bin/nmcli con up INRIA-interne passwd-file /home/{{ ansible_user }}/wifi_config/credentials.conf
+      - name: Enable Wi-Fi connection
+        command:
+            cmd: /usr/bin/nmcli con up INRIA-interne passwd-file /home/{{ ansible_user }}/wifi_config/credentials.conf
 
-- name: Remove file with credentials
-  ansible.builtin.file:
-    path: /home/{{ ansible_user }}/wifi_config/credentials.conf
-    state: absent
+      - name: Remove file with credentials
+        ansible.builtin.file:
+            path: /home/{{ ansible_user }}/wifi_config/credentials.conf
+            state: absent
 
-- name: Reduce priority of wired connection
-  community.general.nmcli:
-    conn_name: "{{ network_eth_conn_name }}"
-    state: present
-    route_metric4: 999
+      - name: Reduce priority of wired connection
+        community.general.nmcli:
+            conn_name: "{{ network_eth_conn_name }}"
+            state: present
+            route_metric4: 999
 
-- name: Apply changes for wired
-  command: sudo nmcli connection up "{{ network_eth_conn_name }}"
+      - name: Apply changes for wired
+        command: sudo nmcli connection up "{{ network_eth_conn_name }}"
+  when: ping_wifi.rc != 0 and ping_eth.rc != 0

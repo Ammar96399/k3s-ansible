@@ -15,7 +15,7 @@
         path: "{{ airgap_dir + '/k3s-install.sh' }}"
       register: host_install_script
 
-    - name: Download k3s install script
+    - name: install script
       become: false
       delegate_to: localhost
       # Workaround for https://github.com/ansible/ansible/issues/64016

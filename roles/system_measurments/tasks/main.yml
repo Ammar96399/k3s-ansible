@@ -21,24 +21,26 @@
   async: 0
   poll: 0
 
-- name: Start python script
-  ansible.builtin.shell: |
-    sudo python3 /home/kazem/simulation/power_usage.py -o /home/kazem/simulation/results/$(hostname)_power_usage.csv read 2>&1 &
-    echo $! > /tmp/power_python_pid
+# - name: Start python script
+#   ansible.builtin.shell: |
+#     sudo python3 /home/kazem/simulation/power_usage.py -o /home/kazem/simulation/results/$(hostname)_power_usage.csv read 2>&1 &
+#     echo $! > /tmp/power_python_pid
+#   become: true
+
+- name: Run command with delay in background
+  ansible.builtin.shell: "nohup bash -c 'sleep 2m && sleep {{duration}}m && sudo kill -9 $(cat /tmp/cpu_python_pid)' > /dev/null 2>&1 &"
   become: true
 
-- name: Run command with delay in background
-  ansible.builtin.shell: "nohup bash -c 'sleep 375m && sudo kill -9 $(cat /tmp/cpu_python_pid)' > /dev/null 2>&1 &"
-
-- name: Run command with delay in background
-  ansible.builtin.shell: "nohup bash -c 'sleep 375m && sudo kill -9 $(cat /tmp/power_python_pid)' > /dev/null 2>&1 &"
+# - name: Run command with delay in background
+#   ansible.builtin.shell: "nohup bash -c 'sleep 2m && sleep {{duration}}m && sudo kill -9 $(cat /tmp/power_python_pid)' > /dev/null 2>&1 &"
+#   become: true
 
 - name: Send cpu data to the server
-  ansible.builtin.shell: nohup bash -c 'sleep 376m && scp -i /home/kazem/.ssh/id_rsa /home/kazem/simulation/results/$(hostname)_cpu_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/hardware_simulation/simulation_event_driven_observatory' > /tmp/scp_output.log 2>&1 &
+  ansible.builtin.shell: nohup bash -c 'sleep 2m && sleep {{duration}}m && scp -i /home/kazem/.ssh/id_rsa /home/kazem/simulation/results/$(hostname)_cpu_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/hardware_simulation/simulation_event_driven_observatory' > /tmp/scp_output.log 2>&1 &
   become: true
   become_user: kazem
 
 - name: Send power data to the server
-  ansible.builtin.shell: nohup bash -c 'sleep 376m && scp -i /home/kazem/.ssh/id_rsa /home/kazem/simulation/results/$(hostname)_power_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/hardware_simulation/simulation_event_driven_observatory' > /tmp/scp_output.log 2>&1 &
+  ansible.builtin.shell: nohup bash -c 'sleep 3m && sleep {{duration}}m && scp -i /home/kazem/.ssh/id_rsa /home/kazem/simulation/results/$(hostname)_power_usage.csv akazem@10.0.0.1:/home/akazem/Documents/PhD/second_publication/results/hardware_simulation/simulation_event_driven_observatory' > /tmp/scp_output.log 2>&1 &
   become: true
   become_user: kazem

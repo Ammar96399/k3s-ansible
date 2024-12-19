@@ -305,31 +305,3 @@
   ansible.builtin.package:
     name: python3-psutil
     state: present
-
-# - name: Check if the SSH key pair exists
-#   ansible.builtin.stat: 
-#     path: /home/kazem/.ssh/id_rsa
-#   register: ssh_key_pair
-
-# - name: Ensure SSH key pair exists
-#   openssh_keypair:
-#     path: "~/.ssh/id_rsa"
-#     type: rsa
-#     size: 4096
-#     state: present
-#   when: not ssh_key_pair.stat.exists
-
-# - name: Gather SSH public key
-#   ansible.builtin.command: cat ~/.ssh/id_rsa.pub
-#   register: ssh_key
-#   ignore_errors: true
-
-# - name: Ensure SSH key exists on the server
-#   ansible.builtin.lineinfile:
-#     path: home/akazem/.ssh/authorized_keys
-#     line: "{{ ssh_key.stdout }}"
-#     create: true
-#   delegate_to: 10.0.0.1
-#   when: ssh_key.stdout is defined
-#   vars:
-#     ansible_ssh_pass: "Nowar1999!!"

@@ -22,8 +22,16 @@
               cpu: "1"
             requests:
               cpu: "${CPU}"
-      nodeSelector:
-        model: "${MODEL}"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: model
+                operator: In
+                values:
+                - "${MODEL}"
       restartPolicy: Never
     EOF
   loop: "{{ range(1, 81) | list }}"

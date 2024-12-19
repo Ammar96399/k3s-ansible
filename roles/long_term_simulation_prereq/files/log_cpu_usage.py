@@ -133,55 +133,74 @@ class Logger():
 
             print("\n", end='', file=hf)  # add a newline
 
-    def write_header(self):
-        if self.style == 'csv':
-            self.write_header_csv()
-        elif self.style == 'tabular':
-            self.write_header_tabular()
-        else:
-            raise ValueError('Unrecognised style: {}'.format(self.style))
-        self.header_count += 1
-
     def poll_cpu(self):
         """
-        Fetch current CPU, RAM, Swap utilization, CPU temperature, and CPU frequency.
+        Fetch current CPU, RAM, Swap utilization, CPU temperature, and CPU frequency,
+        including per-core CPU utilization.
 
         Returns
         -------
-        float
-            CPU utilization (percentage)
-        float
-            RAM utilization (percentage)
-        float
-            Swap utilization (percentage)
-        float
-            CPU temperature (Celsius)
-        float
-            CPU frequency (MHz)
+        tuple
+            A tuple containing:
+            - Overall CPU utilization (percentage)
+            - RAM utilization (percentage)
+            - Swap utilization (percentage)
+            - CPU temperature (Celsius)
+            - CPU frequency (MHz)
+            - Per-core CPU utilization (list of percentages)
         """
-
         return (
             psutil.cpu_percent(),
             psutil.virtual_memory().percent,
             psutil.swap_memory().percent,
             psutil.sensors_temperatures()['cpu_thermal'][0].current,
             psutil.cpu_freq().current,
-            )
+            psutil.cpu_percent(percpu=True),  # Add per-core CPU usage
+        )
+
 
     def write_record(self):
         with smart_open(self.fname, 'a') as hf:
             stats = list(self.poll_cpu())
+            overall_stats = stats[:-1]  # All stats except per-core usage
+            per_core_stats = stats[-1]  # Per-core CPU usage
+
             if self.date_format is None:
                 t = time.time()
             else:
                 t = time.strftime(self.date_format)
-            stats.insert(0, t)
+
+            # Insert timestamp
+            overall_stats.insert(0, t)
+
+            # Combine overall stats and per-core stats for logging
+            all_stats = overall_stats + list(per_core_stats)
+
             if self.style == 'csv':
-                print(','.join([str(stat) for stat in stats]), file=hf)
+                print(','.join([str(stat) for stat in all_stats]), file=hf)
             elif self.style == 'tabular':
-                print(self.tabular_format.format(*stats), file=hf)
+                print(self.tabular_format.format(*all_stats), file=hf)
             else:
                 raise ValueError('Unrecognised style: {}'.format(self.style))
+
+
+    def write_header(self):
+        if self.show_header:
+            # Add per-core headers dynamically
+            core_count = psutil.cpu_count(logical=True)
+            core_headers = [
+                f'Core {i}' + (' (%)' if self.show_units else '')
+                for i in range(core_count)
+            ]
+            self.cpu_field_names.extend(core_headers)
+
+            if self.style == 'csv':
+                self.write_header_csv()
+            elif self.style == 'tabular':
+                self.write_header_tabular()
+            else:
+                raise ValueError('Unrecognised style: {}'.format(self.style))
+            self.header_count += 1
 
     def __call__(self, n_iter=None):
         if self.show_header and (self.header_count < 1

@@ -8,13 +8,13 @@ def get_resource_limit(workload, model):
         for row in csv_reader:
             if row['workload'] == workload_key:
                 if model == 'rpi3b':
-                    return row['rpi3b_required']
+                    return str(int(float(row['rpi3b_required'])*100)) + "m"
                 elif model == 'rpi3b+':
-                    return row['rpi3bplus_required']
+                    return str(int(float(row['rpi3b+_required'])*100)) + "m"
                 elif model == 'rpi4b':
-                    return row['rpi4b_required']
+                    return str(int(float(row['rpi4b_required'])*100)) + "m"
                 elif model == 'rpi5':
-                    return row['rpi5_required']
+                    return str(int(float(row['rpi5_required'])*100)) + "m"
                 else:
                     raise ValueError("Invalid model specified")
         raise ValueError("Workload not found")

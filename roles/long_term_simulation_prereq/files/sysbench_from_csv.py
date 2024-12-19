@@ -3,7 +3,7 @@ import sys
 import subprocess
 import os
 
-WAIT_TIME = 15
+WAIT_TIME = 2
 
 def run_stress_ng(value):
     command = f"stress-ng --cpu 1 --cpu-method union -t {WAIT_TIME}s -l {value}"
